@@ -66,7 +66,7 @@ end
 # testing section
 ####################
 
-space = 1:20_000_000
+space = 1:50_000_000
 #space = rand(space, length(space));
 
 

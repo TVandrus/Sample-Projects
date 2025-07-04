@@ -1,5 +1,5 @@
 # dependencies.jl
-# updated v1.10.0 - 2024-07
+# updated v1.10.4 - 2024-08
 
 #using Core
 #using Base
@@ -11,21 +11,20 @@
 
 
 # essentials
-using Base.Threads, BenchmarkTools, Profiling 
-using DataFrames, CategoricalArrays 
-using Dates, Unitful 
+using Base.Threads, Profile, BenchmarkTools, ProgressMeter
+using DataFrames, CategoricalArrays, Dates
 
-# mathematics/statistics
+# mathematics/statistics/science
 using StatsBase, Statistics 
 using LinearAlgebra 
+using Unitful 
 
 # input/output
 using DelimitedFiles, CSV, Arrow, TOML 
-using DuckDB, LibPQ 
+using DuckDB, LibPQ, SQLite
 
 # graphics
 using Pluto, PlutoUI, Markdown, InteractiveUtils 
-using ProgressMeter
 using Plots, Plotly
 
 # system 
