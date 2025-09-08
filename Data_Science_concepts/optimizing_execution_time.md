@@ -105,12 +105,13 @@ Clean Linux Mint VM
         *Python
             "pandas[all]"
             pyarrow
+            sqlite3
             duckdb
         Julia
             DataFrames
             SQLite
             DuckDB
-        Java, Spark
+        Spark
         Postgres
     500GB free disk
         ~/local/data/
@@ -120,7 +121,7 @@ Raw data: 1,000,000,000 records NYC Taxi rides in CSV
     10E5 -              test 100,000
     10E7 -          scale 10,000,000
     10E9 - demonstrate 1,000,000,000
-Profile:
+Profile: 
     Time limit 300 seconds 
     ~/local/logs/
         {task}-{tool}-{sample_size}

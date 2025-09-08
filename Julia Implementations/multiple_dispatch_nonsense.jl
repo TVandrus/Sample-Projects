@@ -23,7 +23,7 @@
         does not have concrete data type representation
         does not have any behaviours in the definition
     """
-    abstract type AbstractPoint <: Any end
+    abstract type AbstractPoint <: Any end 
 
     """
         Point is a subset/instance of AbstractPoint, and can be materialized  
@@ -58,8 +58,8 @@
     end
 
     """
-        Basic re-use of a function to reduce code repetition
-        and provide a nicer interface for desired use cases
+    Basic re-use of a function to reduce code repetition
+    and provide a nicer interface for desired use cases
     """
     function move_up(p::AbstractPoint)
         return transform(p, :y, y->(y+1))
@@ -176,47 +176,66 @@
         best to default to the abstract type and let the compiler decide when the function is called
     """
 
-
-    struct nDimPoint <: AbstractPoint
-        data::AbstractDict{Symbol, Number}
-        nDimPoint(dims::Vector{Symbol}, vals::Vector{Number}) = length(dims) == length(vals) ? new(Dict(dims .=> vals)) : error("number of dims does not match vals")
-        nDimPoint(data::AbstractDict) = new()
-    end
-    """
-    A new type, for more generalized behaviour than the 'original' Point
-    Point did not need to consider more than 2 dimensions, and nDimPoint is not constrained by the implementation of Point
-    but nDimPoint can re-use Point functionality
-    """
-    P6 = nDimPoint([:x, :y], [1,1])
-
-    move_up(P6)
-    
-    function transform(x::nDimPoint, field::Symbol, op::Function)
-        fns = fieldnames(T)
-        if field in fns
-            args = []
-            for f in fns
-                if f === field
-                    push!(args, op(getfield(x, f)))
-                else
-                    push!(args, getfield(x, f))
-                end
-            end
-            return T(args...)
-        else
-            return x::T
-        end
-    end
-
-
-
 ##################################################
 # feasible extension-space expands exponentially
 
     abstract type AbstractRegion <: Any end
+    abstract type AbstractShape <: Any end 
 
     struct Line <: AbstractRegion 
         p1::AbstractPoint 
         p2::AbstractPoint 
     end
+
+    struct Triangle <: AbstractShape
+        p1::AbstractPoint 
+        p2::AbstractPoint 
+        p3::AbstractPoint 
+    end
+
+    T1 = Triangle(Point(0, 0), Point(4, 0), Point(0, 3))
+
+    function transform_shape(x::T, op::Function) where T <: AbstractShape
+        vertices = fieldnames(T) 
+        args = [] 
+        for p in vertices 
+            push!(args, op(getfield(x, p))) 
+        end
+        return T(args...) 
+    end
+    
+    transform_shape(T1, move_up) 
+
+    """
+        Triangle can 'inherit' functionality defined for AbstractShape
+        Instead, if Triangle is 'composed' of AbstractPoints, then any existing AbstractPoint functionality can be applied to the components
+        Without constraint on the functionality of AbstractPoints/Points, AbstractShapes/Triangle at the time of definition
+        And if the 
+    """
+
+    T2 = Triangle(Point(0, 0), Point3D(4, 0, 0), TimePoint(0, 3, 0))
+
+    function advance_time(p::AbstractPoint)
+        return transform(p, :t, t->(t+1))
+    end
+
+    """
+        It doesn't really matter if a Triangle is made that conforms to the original intention
+        (it was not formalized that a Triangle must be three AbstractPoints of the same concrete Type)
+        If the composition of Triangle is clear, and the behaviour/function is defined in terms of the composition
+        Then multiple dispatch 'just works' to apply a relevant method wherever needed, and the result 'makes sense'
+
+    """
+
+    transform_shape(T1, advance_time)
+    transform_shape(T2, advance_time)
+
+    function advance_time(s::T) where T <: AbstractShape
+        transform_shape(s, advance_time)
+    end
+
+    advance_time(T1)
+    advance_time(T2)
+
+
 
